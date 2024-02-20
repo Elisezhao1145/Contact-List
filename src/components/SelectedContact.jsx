@@ -1,36 +1,39 @@
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from "react"
 
+function SelectedContact({selectedContactId, setSelectedContactId}){
+  const [singleContact, setSingleContact] = useState(null)
 
-export default function SelectedContact({ selectedContactId }) {
-    const [contactDetails, setContactDetails] = useState(null);
+  useEffect(() => {
 
- 
-    useEffect(() => {
-       
-        const fetchContactDetails = async () => {
-            try {
-                const response = await fetch(`https://jsonplaceholder.typicode.com/users/${selectedContactId}`);
-                const data = await response.json();
-                setContactDetails(data);
-            } catch (error) {
-                console.error("Failed to fetch contact details", error);
-            }
-        };
+    async function fetchContact(){
+      try{
+        const response = await fetch(`https://jsonplaceholder.typicode.com/users`)
+        const result = await response.json()
+        setSingleContact(result)
+        console.log(result)
+      } catch(error){
+        console.log(error)
+      }
+    }
 
-        if (selectedContactId) {
-            fetchContactDetails();
+    fetchContact()
+
+  }, [selectedContactId])
+
+  return(
+    <>
+      {singleContact === null
+        ? <div>Loading . . .</div>
+        : <div>
+            <p>{singleContact.name}</p>
+            <p>{singleContact.email}</p>
+            <p>{singleContact.phone}</p>
+            <p>{singleContact.website}</p>
+            <button onClick={() => setSelectedContactId(null)}>Back to List</button>
+          </div>
         }
-    }, [selectedContactId]); 
-
-    if (!selectedContactId) return <div>No contact selected.</div>;
-    if (!contactDetails) return <div>Loading...</div>;
-
-    return (
-        <div>
-            <h2>Contact Details</h2>
-            <p>Name: {contactDetails.name}</p>
-            <p>Email: {contactDetails.email}</p>
-            <p>Phone: {contactDetails.phone}</p>
-        </div>
-    );
+    </>
+  )
 }
+
+export default SelectedContact

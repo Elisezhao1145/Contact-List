@@ -12,22 +12,20 @@ const dummyContacts = [
   ];
 
 export default function ContactList ({ setSelectedContactId }) {
-    const [contacts, setContacts] = useState(dummyContacts)
+    const [contacts, setContacts] = useState([])
 
     useEffect(()=>{
         async function fetchContacts () {
             try {
                 const response = await fetch("https://jsonplaceholder.typicode.com/users");
                 const data = await response.json();
-                setContacts(data);
+                setContacts(result);
               } catch (err) {
                 console.error(err);
               }
             }
               fetchContacts();
     },[]);
-    console.log("Contacts: ", contacts)
-    setSelectedContactId={setSelectedContactId} 
 
     return ( 
         <table>
@@ -45,7 +43,7 @@ export default function ContactList ({ setSelectedContactId }) {
             {
                contacts.map((contact) => {
             
-                return <ContactRow setSelectedContactId={setSelectedContactId} contact={contact} />
+                return <ContactRow key={contact.id} contact={contact} setSelectedContactId={setSelectedContactId} />
                })
              }
           </tbody>
